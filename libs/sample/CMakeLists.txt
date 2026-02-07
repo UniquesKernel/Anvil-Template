@@ -35,6 +35,11 @@ if(BUILD_TESTING)
 
   anvil_set_strict_warnings(example_module)
 
+  target_compile_options(example_module PRIVATE
+    -fexceptions
+    -frtti
+  )
+
   add_custom_command(TARGET example_module POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:example_module>
             ${CMAKE_CURRENT_SOURCE_DIR}/tests/

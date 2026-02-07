@@ -4,23 +4,64 @@ Checks: >
   bugprone-*,
   cert-*,
   cppcoreguidelines-*,
-  modernize-*,
   performance-*,
   readability-*,
-  -modernize-use-trailing-return-type,
-  -cppcoreguidelines-avoid-magic-numbers,
-  -readability-magic-numbers,
-  bugprone-infinite-loop,
-  cppcoreguidelines-no-malloc,
-  cppcoreguidelines-owning-memory,
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic
+  hicpp-*,
+  misc-*,
+  -modernize-*,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -hicpp-vararg,
+  -hicpp-no-array-decay
 
 CheckOptions:
+  # Naming conventions (C-style)
   - key: readability-identifier-naming.VariableCase
     value: lower_case
   - key: readability-identifier-naming.FunctionCase
     value: lower_case
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
   - key: readability-identifier-naming.ConstantCase
     value: UPPER_CASE
+  - key: readability-identifier-naming.EnumCase
+    value: lower_case
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  
+  # Power of Ten Rule 4: Limit function length (60 lines)
+  - key: readability-function-size.LineThreshold
+    value: 60
+  - key: readability-function-size.StatementThreshold
+    value: 50
+  - key: readability-function-size.BranchThreshold
+    value: 10
+  - key: readability-function-size.ParameterThreshold
+    value: 6
+  - key: readability-function-size.NestingThreshold
+    value: 4
+  
+  # Power of Ten Rule 1: Limit cyclomatic complexity
+  - key: readability-function-cognitive-complexity.Threshold
+    value: 15
+  
+  # Pointer depth (single level preferred)
+  - key: readability-identifier-length.MinimumVariableNameLength
+    value: 2
+  
+  # Aggressive bounds checking
+  - key: cppcoreguidelines-narrowing-conversions.WarnOnIntegerNarrowingConversion
+    value: 1
+  - key: cppcoreguidelines-narrowing-conversions.WarnOnFloatingPointNarrowingConversion
+    value: 1
+  
+  # Strict array indexing
+  - key: cppcoreguidelines-pro-bounds-constant-array-index.GslHeader
+    value: ''
+
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+FormatStyle: none

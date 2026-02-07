@@ -17,35 +17,63 @@ function(anvil_find_pybind11)
 endfunction()
 
 function(anvil_set_strict_warnings target_name)
-  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
-    target_compile_options(${target_name} PRIVATE
-      -Wall
-      -Wextra
-      -Wpedantic
-      -Werror
-      -pedantic-errors
-      -Wconversion
-      -Wsign-conversion
-      -Wshadow
-      -Wformat=2
-      -Wformat-security
-      -Wundef
-      -Wnull-dereference
-      -Wdouble-promotion
-      -Wold-style-cast
-      -Wcast-align
-      -Wcast-qual
-      -Woverloaded-virtual
-      -Wnon-virtual-dtor
-      -Wimplicit-fallthrough
-      -Wswitch-enum
-      -Wswitch-default
-      -Wmissing-declarations
-      -Wmissing-noreturn
-      -Wredundant-decls
-      -Wunreachable-code
-    )
-  endif()
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+        # Common flags for both GCC and Clang
+        target_compile_options(${target_name} PRIVATE
+            -Wall -Wextra -Wpedantic -Werror
+            -pedantic-errors
+            -Wconversion -Wsign-conversion
+            -Wshadow
+            -Wformat=2 -Wformat-security
+            -Wundef
+            -Wnull-dereference
+            -Wdouble-promotion
+            -Wold-style-cast
+            -Wcast-align -Wcast-qual
+            -Woverloaded-virtual
+            -Wnon-virtual-dtor
+            -Wimplicit-fallthrough
+            -Wswitch-enum -Wswitch-default
+            -Wmissing-declarations
+            -Wmissing-noreturn
+            -Wredundant-decls
+            -Wvla
+            -Wstrict-overflow=5
+            -Wfloat-equal
+            -Wpointer-arith
+            -Wwrite-strings
+            -Winit-self
+            -fno-exceptions -fno-rtti
+            -fstack-protector-strong
+        )
+
+        # Runtime fortification (both compilers)
+        target_compile_definitions(${target_name} PRIVATE
+            _FORTIFY_SOURCE=2
+            _GLIBCXX_ASSERTIONS
+        )
+    endif()
+
+    # GCC-specific flags
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_compile_options(${target_name} PRIVATE
+            -Wduplicated-cond
+            -Wduplicated-branches
+            -Wlogical-op
+            -Wformat-signedness
+            -Warray-bounds=2  # GCC supports level 2
+        )
+    endif()
+
+    # Clang-specific flags
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_compile_options(${target_name} PRIVATE
+            -Wunreachable-code
+            -Wunreachable-code-break
+            -Wunreachable-code-return
+            -Warray-bounds  # Clang only supports level 1 (implicit)
+        )
+    endif()
 endfunction()
 
 function(anvil_enable_static_analysis target_name)
@@ -53,7 +81,7 @@ function(anvil_enable_static_analysis target_name)
   find_program(CLANG_TIDY_EXE NAMES clang-tidy)
   if(CLANG_TIDY_EXE)
     set_target_properties(${target_name} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy;--warnings-as-errors=*"
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy;--warnings-as-errors=*;--extra-arg=-Wno-unknown-warning-option;--extra-arg=-Wno-error=unknown-warning-option"
     )
     message(STATUS "clang-tidy enabled for ${target_name}")
   else()
@@ -77,11 +105,11 @@ function(anvil_enable_static_analysis_root)
   find_program(CLANG_TIDY_EXE NAMES clang-tidy)
   if(CLANG_TIDY_EXE)
     set(CMAKE_C_CLANG_TIDY
-      "${CLANG_TIDY_EXE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy;--warnings-as-errors=*"
+      "${CLANG_TIDY_EXE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy;--warnings-as-errors=*;--extra-arg=-Wno-unknown-warning-option;--extra-arg=-Wno-error=unknown-warning-option"
         PARENT_SCOPE
     )
     set(CMAKE_CXX_CLANG_TIDY
-      "${CLANG_TIDY_EXE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy;--warnings-as-errors=*"
+      "${CLANG_TIDY_EXE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy;--warnings-as-errors=*;--extra-arg=-Wno-unknown-warning-option;--extra-arg=-Wno-error=unknown-warning-option"
         PARENT_SCOPE
     )
     message(STATUS "clang-tidy enabled for all targets")
