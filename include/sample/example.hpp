@@ -1,5 +1,7 @@
 #pragma once
 
 namespace anvil::sample {
-int example();
+constexpr int example() {
+  return 0;
+}
 }

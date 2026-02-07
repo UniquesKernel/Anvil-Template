@@ -21,7 +21,10 @@ sudo apt-get install -y \
   python3-dev \
   python3-full \
   python3-venv \
-  libpapi-dev
+  libpapi-dev \
+  clang-tidy \
+  cppcheck \
+  iwyu
 if [[ "${CC:-}" == *clang* ]] || [[ "${CXX:-}" == *clang* ]]; then
   sudo apt-get install -y clang
 fi

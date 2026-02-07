@@ -1,7 +1,6 @@
 #include "sample/example.hpp"
 
 namespace anvil::sample {
-int example() {
-  return 0;
-}
+
+static_assert(example() == 0, "example() should return 0");
 }

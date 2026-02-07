@@ -21,6 +21,11 @@ if(BUILD_TESTING)
     ${MODULE_SOURCE}
   )
 
+  set_target_properties(example_module PROPERTIES
+    CXX_CLANG_TIDY ""
+    CXX_CPPCHECK ""
+  )
+
   target_include_directories(example_module
     PRIVATE
       ${CMAKE_SOURCE_DIR}/include
