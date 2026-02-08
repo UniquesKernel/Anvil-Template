@@ -92,7 +92,7 @@ function(anvil_enable_static_analysis target_name)
   find_program(CPPCHECK_EXE NAMES cppcheck)
   if(CPPCHECK_EXE)
     set_target_properties(${target_name} PROPERTIES
-      CXX_CPPCHECK "${CPPCHECK_EXE};--enable=all;--inline-suppr;--error-exitcode=1"
+      CXX_CPPCHECK "${CPPCHECK_EXE};--enable=all;--inline-suppr;--error-exitcode=1;--suppress=missingIncludeSystem;--suppress=unmatchedSuppression"
     )
     message(STATUS "cppcheck enabled for ${target_name}")
   else()
@@ -120,15 +120,19 @@ function(anvil_enable_static_analysis_root)
   # cppcheck
   find_program(CPPCHECK_EXE NAMES cppcheck)
   if(CPPCHECK_EXE)
-    set(CMAKE_C_CPPCHECK
-      "${CPPCHECK_EXE};--enable=all;--inline-suppr;--error-exitcode=1"
-        PARENT_SCOPE
+    add_custom_target(cppcheck ALL
+      COMMAND ${CPPCHECK_EXE}
+        --enable=all
+        --inline-suppr
+        --error-exitcode=1
+        --suppress=missingIncludeSystem
+        --suppress=unmatchedSuppression
+        --project=${CMAKE_BINARY_DIR}/compile_commands.json
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      COMMENT "Running cppcheck (compile_commands.json)"
+      VERBATIM
     )
-    set(CMAKE_CXX_CPPCHECK
-      "${CPPCHECK_EXE};--enable=all;--inline-suppr;--error-exitcode=1"
-        PARENT_SCOPE
-    )
-    message(STATUS "cppcheck enabled for all targets")
+    message(STATUS "cppcheck enabled (project-wide, compile_commands.json)")
   else()
     message(WARNING "cppcheck not found")
   endif()

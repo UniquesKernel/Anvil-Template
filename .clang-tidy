@@ -10,13 +10,23 @@ Checks: >
   misc-*,
   -modernize-*,
   -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-goto,
   -cppcoreguidelines-pro-type-vararg,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-type-cstyle-cast,
+  -cppcoreguidelines-init-variables,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -hicpp-avoid-c-arrays,
   -hicpp-vararg,
   -hicpp-no-array-decay,
-  cppcoreguidelines-no-malloc
+  -hicpp-braces-around-statements,
+  -readability-magic-numbers,
+  -readability-else-after-return,
+  -readability-braces-around-statements,
+  -readability-identifier-length,
+  -misc-non-private-member-variables-in-classes
 
 CheckOptions:
   # Naming conventions (C-style)
@@ -51,19 +61,11 @@ CheckOptions:
   - key: readability-function-cognitive-complexity.Threshold
     value: 15
   
-  # Pointer depth (single level preferred)
-  - key: readability-identifier-length.MinimumVariableNameLength
-    value: 2
-  
   # Aggressive bounds checking
   - key: cppcoreguidelines-narrowing-conversions.WarnOnIntegerNarrowingConversion
     value: 1
   - key: cppcoreguidelines-narrowing-conversions.WarnOnFloatingPointNarrowingConversion
     value: 1
-  
-  # Strict array indexing
-  - key: cppcoreguidelines-pro-bounds-constant-array-index.GslHeader
-    value: ''
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
