@@ -12,8 +12,11 @@ Checks: >
   -cppcoreguidelines-avoid-c-arrays,
   -cppcoreguidelines-pro-type-vararg,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-type-cstyle-cast,
   -hicpp-vararg,
-  -hicpp-no-array-decay
+  -hicpp-no-array-decay,
+  cppcoreguidelines-no-malloc
 
 CheckOptions:
   # Naming conventions (C-style)
