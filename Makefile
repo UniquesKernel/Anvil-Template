@@ -13,8 +13,8 @@ endif
 
 # Prefer the project venv Python when available so tests use installed deps.
 VENV_PY = $(VENV_DIR)/bin/python
-ifneq ($(VENV_PY_ABS),)
-	CMAKE_OPTS += -DPython3_EXECUTABLE=$(VENV_PY_ABS)
+ifneq ($(wildcard $(VENV_PY)),)
+	CMAKE_OPTS += -DPython3_EXECUTABLE=$(abspath $(VENV_PY))
 endif
 
 help:
