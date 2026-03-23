@@ -2,13 +2,25 @@ cmake_minimum_required(VERSION 3.22)
 
 project(TemplateProject VERSION 0.1.0 LANGUAGES C CXX)
 
-option(BUILD_TESTING "Build Tests" ON)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  option(BUILD_TESTING "Build Tests" ON)
+else()
+  option(BUILD_TESTING "Build Tests" OFF)
+endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(CompilerStandards)
 include(Functions)
-anvil_enable_static_analysis_root()
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  anvil_enable_static_analysis_root()
+endif()
+
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+  set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+endif()
 
 if(BUILD_TESTING)
   enable_testing()
@@ -21,7 +33,8 @@ endif()
 
 add_subdirectory(libs/sample)
 
-if(CMAKE_EXPORT_COMPILE_COMMANDS)
+message([STATUS] "${CMAKE_CURRENT_SOURCE_DIR} and ${CMAKE_SOURCE_DIR} and ${CMAKE_EXPORT_COMPILE_COMMANDS}")
+if(CMAKE_EXPORT_COMPILE_COMMANDS AND CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   file(CREATE_LINK
     "${CMAKE_BINARY_DIR}/compile_commands.json"
     "${CMAKE_SOURCE_DIR}/compile_commands.json"
